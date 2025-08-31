@@ -526,6 +526,62 @@ class BlinkCameraMini(BlinkCamera):
         """Return camera arm status."""
         return self.sync.arm
 
+    async def async_arm(self, value):
+        """Set camera arm status."""
+        url = (
+            f"{self.sync.urls.base_url}/api/v1/accounts/"
+            f"{self.sync.blink.account_id}/networks/"
+            f"{self.network_id}/owls/{self.camera_id}/config"
+        )
+        data = dumps({"enabled": value})
+        response = await api.http_post(self.sync.blink, url, data=data)
+        await api.wait_for_command(self.sync.blink, response)
+        return response
+
+    async def record(self):
+        """Initiate clip recording for a blink mini camera."""
+        url = (
+            f"{self.sync.urls.base_url}/api/v1/accounts/"
+            f"{self.sync.blink.account_id}/networks/"
+            f"{self.network_id}/owls/{self.camera_id}/clip"
+        )
+        response = await api.http_post(self.sync.blink, url)
+        await api.wait_for_command(self.sync.blink, response)
+        return response
+
+    async def snap_picture(self):
+        """Snap picture for a blink mini camera."""
+        url = (
+            f"{self.sync.urls.base_url}/api/v1/accounts/"
+            f"{self.sync.blink.account_id}/networks/"
+            f"{self.network_id}/owls/{self.camera_id}/thumbnail"
+        )
+        response = await api.http_post(self.sync.blink, url)
+        await api.wait_for_command(self.sync.blink, response)
+        return response
+
+    async def turn_light_on(self):
+        """Turn on the light for a blink mini camera."""
+        url = (
+            f"{self.sync.urls.base_url}/api/v1/accounts/"
+            f"{self.sync.blink.account_id}/networks/"
+            f"{self.network_id}/owls/{self.camera_id}/lights/on"
+        )
+        response = await api.http_post(self.sync.blink, url)
+        await api.wait_for_command(self.sync.blink, response)
+        return response
+    
+    async def turn_light_off(self):
+        """Turn off the light for a blink mini camera."""
+        url = (
+            f"{self.sync.urls.base_url}/api/v1/accounts/"
+            f"{self.sync.blink.account_id}/networks/"
+            f"{self.network_id}/owls/{self.camera_id}/lights/off"
+        )
+        response = await api.http_post(self.sync.blink, url)
+        await api.wait_for_command(self.sync.blink, response)
+        return response
+
     async def get_sensor_info(self):
         """Get sensor info for blink mini camera."""
 
